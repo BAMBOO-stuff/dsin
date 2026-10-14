@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>20年 只干两件事 | 策设</title>
+<style>
+/* =========================================================
+   主题变量
+   ========================================================= */
+:root{
+  --ink:#111; --ink2:#555; --ink3:#999;
+  --line:#e8e8e6; --bg:#fff; --bg2:#f7f7f5; --card:#fff;
+  --red:#e60012; --shadow:rgba(0,0,0,.06);
+  --r:14px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+[data-theme="dark"]{
+  --ink:#f2f2f0; --ink2:#b6b6b1; --ink3:#7c7c78;
+  --line:#2a2a27; --bg:#0e0e0e; --bg2:#161614; --card:#1a1a18;
+  --red:#ff2a36; --shadow:rgba(0,0,0,.5);
+}
+
+/* =========================================================
+   基础
+   ========================================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+body{
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Source Han Sans SC","Noto Sans SC",system-ui,-apple-system,sans-serif;
+  color:var(--ink);
+  background:#e9e9e6;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  -webkit-font-smoothing:antialiased;
+  transition:background .45s var(--ease);
+}
+[data-theme="dark"] body{background:#050505}
+
+/* 手机画布 */
+.phone{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background:var(--bg);
+  container-type:inline-size;
+  position:relative;
+  overflow-x:hidden;
+  box-shadow:0 0 0 1px rgba(0,0,0,.03), 0 30px 80px rgba(0,0,0,.12);
+  transition:background .45s var(--ease);
+}
+[data-theme="dark"] .phone{
+  box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 30px 80px rgba(0,0,0,.6);
+}
+
+img{display:block;max-width:100%;height:auto}
+ul{list-style:none}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+/* =========================================================
+   右上角图标
+   ========================================================= */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:99;
+  display:flex;
+  justify-content:flex-end;
+  gap:8px;
+  padding:14px 18px;
+  background:var(--bg);
+  transition:background .45s var(--ease);
+}
+.icon-btn{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--card);
+  border:1px solid var(--line);
+  color:var(--ink);
+  display:grid;place-items:center;
+  font-size:12px;font-weight:800;letter-spacing:.02em;
+  box-shadow:0 4px 14px var(--shadow);
+  transition:transform .25s var(--ease), border-color .25s var(--ease);
+}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn svg{display:block}
+#themeBtn .ic-sun{display:none}
+#themeBtn .ic-moon{display:block}
+[data-theme="dark"] #themeBtn .ic-sun{display:block}
+[data-theme="dark"] #themeBtn .ic-moon{display:none}
+
+/* =========================================================
+   01 Hero
+   ========================================================= */
+.hero{padding:8px 22px 40px}
+.hero-title{
+  font-size:clamp(32px, 11cqw, 46px);
+  font-weight:900;
+  letter-spacing:-.04em;
+  line-height:1.05;
+  margin-bottom:22px;
+}
+.hero-title span{
+  display:inline-block;
+  font-weight:200;
+  letter-spacing:.005em;
+  color:var(--ink2);
+}
+.hero-photo{
+  overflow:hidden;
+  border-radius:var(--r);
+  background:var(--bg2);
+}
+.hero-photo img{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+  filter:grayscale(1) contrast(1.05);
+  transition:filter .7s var(--ease);
+}
+.hero-photo:hover img{filter:grayscale(0)}
+
+/* =========================================================
+   02 Tab + 轮播
+   ========================================================= */
+.works{padding:36px 22px}
+.tab-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:12px;
+}
+.tab{
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  gap:4px;
+  text-align:left;
+  padding:16px 14px;
+  border:1px solid var(--line);
+  border-radius:var(--r);
+  background:var(--bg);
+  transition:border-color .38s var(--ease), color .38s var(--ease);
+}
+.tab::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:var(--red);
+  transform:translateY(101%);
+  transition:transform .48s var(--ease);
+  z-index:0;
+}
+.tab>*{position:relative;z-index:1}
+.tab-kicker{
+  font-size:9px;
+  letter-spacing:.26em;
+  color:var(--ink3);
+  transition:color .38s var(--ease);
+}
+.tab-count{
+  font-size:26px;
+  font-weight:200;
+  line-height:1.1;
+  letter-spacing:-.01em;
+}
+.tab-count b{font-weight:900}
+.tab-name{
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.04em;
+  margin-top:2px;
+}
+.tab.is-active{border-color:var(--red);color:#fff}
+.tab.is-active::after{transform:translateY(0)}
+.tab.is-active .tab-kicker{color:rgba(255,255,255,.72)}
+
+.carousel{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1;
+  overflow:hidden;
+  border-radius:var(--r);
+  background:var(--bg2);
+}
+.carousel-track{
+  display:flex;
+  height:100%;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.carousel-track::-webkit-scrollbar{display:none}
+.slide{
+  flex:0 0 100%;
+  height:100%;
+  scroll-snap-align:start;
+  overflow:hidden;
+}
+.slide img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:transform 1s var(--ease);
+}
+
+/* =========================================================
+   03 能力（深色 · 三列左右对齐）
+   ========================================================= */
+.ability{
+  background:#111;
+  color:#fff;
+  padding:48px 22px;
+  transition:background .45s var(--ease);
+}
+[data-theme="dark"] .ability{background:#000}
+.ability-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.ability-item{display:grid;gap:6px}
+.ability-item:nth-child(1){text-align:left}
+.ability-item:nth-child(2){text-align:center}
+.ability-item:nth-child(3){text-align:right}
+.ability-label{
+  font-size:10px;
+  color:rgba(255,255,255,.42);
+  letter-spacing:.12em;
+  font-weight:500;
+}
+.ability-value{
+  font-size:26px;
+  font-weight:800;
+  color:var(--red);
+  letter-spacing:.02em;
+  line-height:1.06;
+}
+
+/* =========================================================
+   04 价格
+   ========================================================= */
+.price{padding:56px 22px;text-align:center}
+.price-lines{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:baseline;
+  width:100%;
+  column-gap:6px;
+  row-gap:10px;
+}
+.pl-a,.pl-b{
+  font-size:clamp(16px, 5.4cqw, 23px);
+  font-weight:900;
+  letter-spacing:-.015em;
+  line-height:1.2;
+}
+.pl-a{justify-self:end}
+.pl-b{justify-self:start}
+.pl-mid{width:0;justify-self:center}
+.pe-a,.pe-b{
+  font-size:12px;
+  color:var(--ink2);
+  letter-spacing:.04em;
+  font-weight:600;
+}
+.pe-a{justify-self:end}
+.pe-b{justify-self:start}
+
+.price-sub{
+  margin-top:36px;
+  font-size:16px;
+  font-weight:600;
+  color:var(--ink2);
+  letter-spacing:.02em;
+}
+.price-sub strong{
+  color:var(--red);
+  font-size:1.55em;
+  font-weight:900;
+  margin-left:.15em;
+  letter-spacing:-.02em;
+}
+
+/* =========================================================
+   05 客户作品（3:1 横版 · 一屏一张）
+   ========================================================= */
+.clients{padding:56px 22px}
+.client{margin-bottom:48px}
+.client:last-child{margin-bottom:0}
+.client-title{
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.02em;
+  margin-bottom:16px;
+  padding-left:12px;
+  border-left:3px solid var(--red);
+}
+.client-track{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  border-radius:var(--r);
+}
+.client-track::-webkit-scrollbar{display:none}
+.client-track img{
+  flex:0 0 100%;
+  aspect-ratio:3/1;
+  object-fit:cover;
+  border-radius:var(--r);
+  background:var(--bg2);
+  scroll-snap-align:start;
+}
+
+/* =========================================================
+   06 联系
+   ========================================================= */
+.contact{
+  background:var(--bg2);
+  padding:56px 22px;
+  text-align:center;
+  transition:background .45s var(--ease);
+}
+.contact-title{
+  font-size:24px;
+  font-weight:100;
+  letter-spacing:.01em;
+  line-height:1.35;
+  margin-bottom:36px;
+}
+.contact-title span{
+  color:var(--red);
+  font-weight:900;
+  letter-spacing:-.02em;
+}
+.contact-qr{
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  margin-bottom:32px;
+  flex-wrap:wrap;
+}
+.contact-qr img{
+  width:128px;
+  aspect-ratio:1/1;
+  object-fit:contain;
+  border-radius:12px;
+  background:#fff;
+  padding:10px;
+  box-shadow:0 6px 24px var(--shadow);
+}
+.contact-line{
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.02em;
+  line-height:1.75;
+}
+.contact-line a{color:var(--red)}
+.contact-cute{
+  margin-top:6px;
+  font-size:12px;
+  color:var(--ink3);
+  letter-spacing:.22em;
+}
+.other-channel{margin-top:36px}
+.other-channel-title{
+  font-size:11px;
+  letter-spacing:.2em;
+  color:var(--ink3);
+  margin-bottom:16px;
+}
+.socials{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.socials a{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border-radius:12px;
+  background:var(--ink);
+  color:var(--bg);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.02em;
+  transition:transform .25s var(--ease), background .25s var(--ease), color .25s var(--ease);
+}
+.socials a:active{background:var(--red);color:#fff;transform:scale(.94)}
+
+/* =========================================================
+   Footer
+   ========================================================= */
+.footer{
+  padding:28px 22px 40px;
+  border-top:1px solid var(--line);
+}
+.footer p{
+  font-size:11px;
+  color:var(--ink3);
+  line-height:1.9;
+  letter-spacing:.02em;
+  text-align:center;
+}
+
+/* =========================================================
+   小屏铺满
+   ========================================================= */
+@media (max-width:430px){
+  body{
+    background:var(--bg);
+    display:block;
+  }
+  [data-theme="dark"] body{background:var(--bg)}
+  .phone{
+    max-width:none;
+    box-shadow:none;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- ============ 顶栏：语言 / 主题 ============ -->
+  <div class="topbar">
+    <button class="icon-btn" id="langBtn" type="button"
+            title="中英文切换 / Language">中</button>
+    <button class="icon-btn" id="themeBtn" type="button"
+            title="主题切换 / Theme">
+      <svg class="ic-sun" viewBox="0 0 24 24" width="17" height="17" fill="none"
+           stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4.3"/>
+        <path d="M12 2v2.2M12 19.8V22M2 12h2.2M19.8 12H22M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M19.1 4.9l-1.6 1.6M6.5 17.5l-1.6 1.6"/>
+      </svg>
+      <svg class="ic-moon" viewBox="0 0 24 24" width="17" height="17" fill="none"
+           stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ============ 01 Hero ============ -->
+  <header class="hero">
+    <h1 class="hero-title" data-i18n="hero.title">20年 <span>只干两件事</span></h1>
+    <figure class="hero-photo">
+      <img id="heroImg" alt="设计师工作照" />
+    </figure>
+  </header>
+
+  <!-- ============ 02 案例轮播 ============ -->
+  <section class="works" id="works">
+    <div class="tab-grid">
+      <button class="tab is-active" data-key="trademark" type="button">
+        <span class="tab-kicker" data-i18n="tab.ceshe">策设</span>
+        <span class="tab-count" data-i18n="tab.tmCount"><b>560</b> 枚</span>
+        <span class="tab-name" data-i18n="tab.tmName">商标设计</span>
+      </button>
+      <button class="tab" data-key="packaging" type="button">
+        <span class="tab-kicker" data-i18n="tab.ceshe">策设</span>
+        <span class="tab-count" data-i18n="tab.pkCount"><b>270</b> 款</span>
+        <span class="tab-name" data-i18n="tab.pkName">包装设计</span>
+      </button>
+    </div>
+
+    <div class="carousel">
+      <div class="carousel-track" id="carouselTrack"></div>
+    </div>
+  </section>
+
+  <!-- ============ 03 能力 ============ -->
+  <section class="ability" id="ability">
+    <div class="ability-grid">
+      <div class="ability-item">
+        <span class="ability-label" data-i18n="ability.1">图形能力</span>
+        <strong class="ability-value" data-i18n="tagline.1">更美</strong>
+      </div>
+      <div class="ability-item">
+        <span class="ability-label" data-i18n="ability.2">信息传达</span>
+        <strong class="ability-value" data-i18n="tagline.2">更快</strong>
+      </div>
+      <div class="ability-item">
+        <span class="ability-label" data-i18n="ability.3">商业洞察</span>
+        <strong class="ability-value" data-i18n="tagline.3">更准</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 价格 ============ -->
+  <section class="price" id="price">
+    <div class="price-lines">
+      <span class="pl-a" data-i18n="price.a">AI能做的70分到</span>
+      <span class="pl-mid"></span>
+      <span class="pl-b" data-i18n="price.b">我能做的90分</span>
+
+      <span class="pe-a" data-i18n="price.ea">= 0成本</span>
+      <span></span>
+      <span class="pe-b" data-i18n="price.eb">= 3000元成本</span>
+    </div>
+
+    <p class="price-sub" data-i18n="price.sub">只为20分付费 <strong>= 600元</strong></p>
+  </section>
+
+  <!-- ============ 05 下游资源 ============ -->
+  <section class="works" id="resource" style="padding-top:0">
+    <h2 class="client-title" style="font-size:18px;border-left-width:4px;margin-bottom:20px"
+        data-i18n="resource.title">另外，我的下游资源</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px">
+      <div style="padding:20px 8px;border:1px solid var(--line);border-radius:var(--r);text-align:center;font-size:13px;font-weight:700;letter-spacing:.04em"
+           data-i18n="resource.1">商标注册</div>
+      <div style="padding:20px 8px;border:1px solid var(--line);border-radius:var(--r);text-align:center;font-size:13px;font-weight:700;letter-spacing:.04em"
+           data-i18n="resource.2">包装生产</div>
+      <div style="padding:20px 8px;border:1px solid var(--line);border-radius:var(--r);text-align:center;font-size:13px;font-weight:700;letter-spacing:.04em"
+           data-i18n="resource.3">空间工装</div>
+    </div>
+    <p style="text-align:center;color:var(--ink3);font-size:12px;letter-spacing:.04em"
+       data-i18n="resource.note">均为上市公司 <span>·</span> 衔接你的项目落地</p>
+  </section>
+
+  <!-- ============ 06 客户作品 ============ -->
+  <section class="clients" id="clientsWrap"></section>
+
+  <!-- ============ 07 联系 ============ -->
+  <section class="contact" id="contact">
+    <h2 class="contact-title" data-i18n="contact.title">期待质量稳定和预算紧张<br /><span>找我</span></h2>
+
+    <div class="contact-qr" id="contactQr"></div>
+
+    <p class="contact-line" data-i18n="contact.line">
+      微信手机同号 · 支持我的小红书
+      <a href="tel:18111648385">18111648385</a>
+    </p>
+    <p class="contact-cute" data-i18n="contact.cute">免费又可爱。</p>
+
+    <div class="other-channel">
+      <p class="other-channel-title" data-i18n="contact.other">非微信区的朋友请在这里找我</p>
+      <ul class="socials">
+        <li><a href="#" title="微信">微</a></li>
+        <li><a href="#" title="小红书">红</a></li>
+        <li><a href="#" title="微博">博</a></li>
+        <li><a href="#" title="抖音">抖</a></li>
+        <li><a href="#" title="Instagram">IG</a></li>
+        <li><a href="#" title="Behance">Bē</a></li>
+        <li><a href="#" title="Dribbble">Dr</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 08 版权 ============ -->
+  <footer class="footer">
+    <p data-i18n="footer.text">以上作品著作权均归产权方所有，此展示仅为行业交流与实力展示。大量作品不便展示，敬请谅解！</p>
+  </footer>
+
+</div>
+
+<script>
+/* =========================================================
+   1. 多语言字典
+   ========================================================= */
+const I18N = {
+  zh: {
+    'hero.title': '20年 <span>只干两件事</span>',
+    'tab.ceshe': '策设',
+    'tab.tmCount': '<b>560</b> 枚',
+    'tab.tmName': '商标设计',
+    'tab.pkCount': '<b>270</b> 款',
+    'tab.pkName': '包装设计',
+    'ability.1': '图形能力',
+    'ability.2': '信息传达',
+    'ability.3': '商业洞察',
+    'tagline.1': '更美',
+    'tagline.2': '更快',
+    'tagline.3': '更准',
+    'price.a': 'AI能做的70分到',
+    'price.b': '我能做的90分',
+    'price.ea': '= 0成本',
+    'price.eb': '= 3000元成本',
+    'price.sub': '只为20分付费 <strong>= 600元</strong>',
+    'resource.title': '另外，我的下游资源',
+    'resource.1': '商标注册',
+    'resource.2': '包装生产',
+    'resource.3': '空间工装',
+    'resource.note': '均为上市公司 <span>·</span> 衔接你的项目落地',
+    'client.beckham': '我的设计与贝克汉姆',
+    'client.huxia': '我的设计与胡夏',
+    'client.wwf': '我的设计与世界自然基金会',
+    'client.panda': '我的设计与熊猫基地',
+    'client.zhangjie': '我的设计与张杰',
+    'client.pandapost': '我的设计与熊猫邮局',
+    'client.fantasticbeasts': '我的设计与《神奇动物在哪里》',
+    'client.douwei': '我的设计与窦唯',
+    'contact.title': '期待质量稳定和预算紧张<br /><span>找我</span>',
+    'contact.line': '微信手机同号 · 支持我的小红书 <a href="tel:18111648385">18111648385</a>',
+    'contact.cute': '免费又可爱。',
+    'contact.other': '非微信区的朋友请在这里找我',
+    'footer.text': '以上作品著作权均归产权方所有，此展示仅为行业交流与实力展示。大量作品不便展示，敬请谅解！'
+  },
+  en: {
+    'hero.title': '20 Years, <span>Just Two Things</span>',
+    'tab.ceshe': 'CESHE',
+    'tab.tmCount': '<b>560</b> Marks',
+    'tab.tmName': 'Trademark Design',
+    'tab.pkCount': '<b>270</b> Sets',
+    'tab.pkName': 'Packaging Design',
+    'ability.1': 'Graphic Power',
+    'ability.2': 'Clear Message',
+    'ability.3': 'Business Insight',
+    'tagline.1': 'More Beautiful',
+    'tagline.2': 'Faster',
+    'tagline.3': 'More Precise',
+    'price.a': 'AI does 70 to',
+    'price.b': 'I do 90',
+    'price.ea': '= 0 cost',
+    'price.eb': '= ¥3000 cost',
+    'price.sub': 'Pay only for the 20 <strong>= ¥600</strong>',
+    'resource.title': 'My Downstream Resources',
+    'resource.1': 'Trademark Filing',
+    'resource.2': 'Packaging Production',
+    'resource.3': 'Space & Interior',
+    'resource.note': 'All listed companies <span>·</span> Landing your project',
+    'client.beckham': 'My Work with Beckham',
+    'client.huxia': 'My Work with Hu Xia',
+    'client.wwf': 'My Work with WWF',
+    'client.panda': 'My Work with Panda Base',
+    'client.zhangjie': 'My Work with Zhang Jie',
+    'client.pandapost': 'My Work with Panda Post',
+    'client.fantasticbeasts': 'My Work with "Fantastic Beasts"',
+    'client.douwei': 'My Work with Dou Wei',
+    'contact.title': 'Stable quality, tight budget<br /><span>Find me</span>',
+    'contact.line': 'WeChat & Mobile · Find me on RED <a href="tel:18111648385">18111648385</a>',
+    'contact.cute': 'Free and cute.',
+    'contact.other': 'Outside WeChat? Find me here',
+    'footer.text': 'All artworks copyright belong to their respective owners. This showcase is for industry exchange only.'
+  }
+};
+
+let lang = 'zh';
+
+/* 客户作品分组 */
+const CLIENTS = [
+  { key: 'beckham',         i18nKey: 'client.beckham' },
+  { key: 'huxia',           i18nKey: 'client.huxia' },
+  { key: 'wwf',             i18nKey: 'client.wwf' },
+  { key: 'panda',           i18nKey: 'client.panda' },
+  { key: 'zhangjie',        i18nKey: 'client.zhangjie' },
+  { key: 'pandapost',       i18nKey: 'client.pandapost' },
+  { key: 'fantasticbeasts', i18nKey: 'client.fantasticbeasts' },
+  { key: 'douwei',          i18nKey: 'client.douwei' }
+];
+
+/* =========================================================
+   2. 占位图（加载失败时自动顶上）
+   ========================================================= */
+function placeholder(label, w, h) {
+  w = w || 800; h = h || 800;
+  const fs = Math.max(12, Math.round(Math.min(w, h) / 16));
+  const svg =
+`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+<defs>
+<pattern id="g" width="26" height="26" patternUnits="userSpaceOnUse">
+<rect width="26" height="26" fill="#fafaf8"/>
+<path d="M0 0 L26 26 M26 0 L0 26" stroke="#eeece8" stroke-width="1"/>
+</pattern>
+</defs>
+<rect width="100%" height="100%" fill="url(#g)"/>
+<rect x="1" y="1" width="${w-2}" height="${h-2}" fill="none" stroke="#e6e4e0" stroke-width="2" rx="10"/>
+<text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+ font-family="-apple-system,PingFang SC,sans-serif" font-size="${fs}"
+ fill="#b8b6b0" letter-spacing="1">${label}</text>
+</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+/* =========================================================
+   3. 图片路径配置
+   ========================================================= */
+const IMAGES = {
+  hero: ['images/hero.png'],
+
+  // 🟡 无限张：默认预留50个位置，加载失败会自动隐藏，用户放多少张就显示多少张
+  trademark: Array.from({ length: 50 }, (_, i) => `images/trademark/${i + 1}.png`),
+  packaging: Array.from({ length: 50 }, (_, i) => `images/packaging/${i + 1}.png`),
+
+  // 🔵 1张
+  beckham: ['images/beckham/1.png'],
+  huxia: ['images/huxia/1.png'],
+  wwf: ['images/wwf/1.png'],
+  panda: ['images/panda/1.png'],
+  zhangjie: ['images/zhangjie/1.png'],
+  pandapost: ['images/pandapost/1.png'],
+  fantasticbeasts: ['images/fantasticbeasts/1.png'],
+  douwei: ['images/douwei/1.png'],
+
+  // 🔴 单独文件名
+  contact: ['images/contact/wechat.png', 'images/contact/xiaohongshu.png']
+};
+
+/* 获取图片列表 */
+function makeSlides(key) {
+  return IMAGES[key] || [];
+}
+
+/* =========================================================
+   4. 语言 / 主题
+   ========================================================= */
+const htmlEl   = document.documentElement;
+const langBtn  = document.getElementById('langBtn');
+const themeBtn = document.getElementById('themeBtn');
+
+function applyLang(l) {
+  lang = l;
+  htmlEl.lang = (l === 'zh') ? 'zh-CN' : 'en';
+  const dict = I18N[l];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (dict[k] != null) el.innerHTML = dict[k];
+  });
+  langBtn.textContent = (l === 'zh') ? '中' : 'EN';
+  document.querySelectorAll('.client-title[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    if (dict[k] != null) el.textContent = dict[k];
+  });
+}
+
+langBtn.addEventListener('click', () => applyLang(lang === 'zh' ? 'en' : 'zh'));
+
+themeBtn.addEventListener('click', () => {
+  const cur = htmlEl.getAttribute('data-theme');
+  htmlEl.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+});
+
+/* =========================================================
+   5. Hero
+   ========================================================= */
+const heroImg = document.getElementById('heroImg');
+const heroSrc = makeSlides('hero')[0];
+if (heroSrc) {
+  heroImg.src = heroSrc;
+  heroImg.onerror = function() { this.src = placeholder('hero', 1200, 800); };
+} else {
+  heroImg.src = placeholder('hero', 1200, 800);
+}
+
+/* =========================================================
+   6. 案例轮播（一次一张 · 1:1）
+   ========================================================= */
+const track = document.getElementById('carouselTrack');
+let currentKey = 'trademark';
+let autoTimer  = null;
+
+function renderCarousel(key) {
+  currentKey = key;
+  stopAuto();
+  track.innerHTML = '';
+
+  const srcs = makeSlides(key);
+  if (srcs.length === 0) {
+    const fig = document.createElement('figure');
+    fig.className = 'slide';
+    const img = new Image();
+    img.src = placeholder(key, 800, 800);
+    fig.appendChild(img);
+    track.appendChild(fig);
+  } else {
+    srcs.forEach((src, i) => {
+      const fig = document.createElement('figure');
+      fig.className = 'slide';
+      const img = new Image();
+      img.src = src;
+      img.alt = key + ' ' + (i + 1);
+      img.loading = (i < 2) ? 'eager' : 'lazy';
+      img.decoding = 'async';
+      // 如果图片不存在（用户没放这么多），自动移除这一屏
+      img.onerror = function() { fig.remove(); };
+      fig.appendChild(img);
+      track.appendChild(fig);
+    });
+  }
+
+  track.scrollLeft = 0;
+  startAuto();
+}
+
+function step(dir) {
+  const total = track.children.length;
+  if (!total) return;
+  let i = Math.round(track.scrollLeft / track.clientWidth);
+  i = (i + dir + total) % total;
+  track.scrollTo({ left: i * track.clientWidth, behavior: 'smooth' });
+}
+
+function startAuto() { stopAuto(); autoTimer = setInterval(() => step(1), 3600); }
+function stopAuto()  { if (autoTimer) clearInterval(autoTimer); autoTimer = null; }
+
+track.addEventListener('mouseenter', stopAuto);
+track.addEventListener('mouseleave', startAuto);
+track.addEventListener('touchstart', stopAuto, { passive: true });
+track.addEventListener('touchend',   startAuto, { passive: true });
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t =>
+      t.classList.toggle('is-active', t === tab)
+    );
+    renderCarousel(tab.dataset.key);
+  });
+});
+
+renderCarousel('trademark');
+
+/* =========================================================
+   7. 客户作品（3:1 横版 · 只显示1张）
+   ========================================================= */
+const clientsWrap = document.getElementById('clientsWrap');
+
+function renderClients() {
+  clientsWrap.innerHTML = '';
+  CLIENTS.forEach(c => {
+    const art = document.createElement('article');
+    art.className = 'client';
+
+    const h3 = document.createElement('h3');
+    h3.className = 'client-title';
+    h3.dataset.i18n = c.i18nKey;
+    h3.textContent = I18N[lang][c.i18nKey];
+    art.appendChild(h3);
+
+    const tr = document.createElement('div');
+    tr.className = 'client-track';
+
+    const srcs = makeSlides(c.key);
+    if (srcs.length === 0) {
+      const img = new Image();
+      img.src = placeholder(c.key, 1800, 600);
+      tr.appendChild(img);
+    } else {
+      srcs.forEach((src, i) => {
+        const img = new Image();
+        img.src = src;
+        img.alt = I18N[lang][c.i18nKey] + ' ' + (i + 1);
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        // 这里只会有1张图，如果没放，显示占位图
+        img.onerror = function() { this.src = placeholder(c.key + ' / 1', 1800, 600); };
+        tr.appendChild(img);
+      });
+    }
+
+    art.appendChild(tr);
+    clientsWrap.appendChild(art);
+  });
+}
+renderClients();
+
+/* =========================================================
+   8. 联系区二维码
+   ========================================================= */
+(function renderContact() {
+  const qr = document.getElementById('contactQr');
+  const srcs = makeSlides('contact');
+  if (srcs.length === 0) {
+    const img = new Image();
+    img.src = placeholder('QR', 400, 400);
+    qr.appendChild(img);
+  } else {
+    srcs.forEach((src, i) => {
+      const img = new Image();
+      img.src = src;
+      img.alt = '二维码 ' + (i + 1);
+      img.loading = 'lazy';
+      img.onerror = function() { this.src = placeholder('QR ' + (i + 1), 400, 400); };
+      qr.appendChild(img);
+    });
+  }
+})();
+
+/* =========================================================
+   9. 初始化
+   ========================================================= */
+applyLang('zh');
+</script>
+</body>
+</html>
